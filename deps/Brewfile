@@ -1,0 +1,34 @@
+# tap for emacs
+tap railwaycat/emacsmacport
+
+brew "autoconf"
+brew "automake"
+brew "cmake"
+brew "gnupg"
+brew "gnutls"
+brew "jq"
+brew "openjdk"
+brew "imagemagick"
+brew "pass"
+brew "texinfo"
+brew "universal-ctags"
+brew "yq"
+brew "node"
+brew "nvm"
+brew "coreutils"
+brew "ispell"
+brew "gnu-tar"
+brew "gnu-sed"
+brew "gnu-indent"
+brew "gnu-getopt"
+brew "git-crypt"
+brew "findutils"
+brew "ghostscript"
+brew "graphviz"
+brew "emacs-mac"
+
+# probably many more as this is just off the top of my head.
+# will need to add when / If I have a new mac to config
+
+
+

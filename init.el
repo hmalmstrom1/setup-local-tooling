@@ -157,7 +157,14 @@ There are two things you can do about this warning:
 ;; (use-package all-the-icons-ivy-rich
 ;;  :init (all-the-icons-ivy-rich-mode 1))
 
-(use-package doom-themes :defer t)
+(use-package neotree)
+
+(use-package doom-themes
+  :init
+  (load-theme 'doom-moonlight)
+  (doom-themes-visual-bell-config)
+  (doom-themes-neotree-config)
+)
 
 (use-package doom-modeline
  :init (doom-modeline-mode 1)
@@ -870,5 +877,4 @@ There are two things you can do about this warning:
   :config
   (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))
   (setq rmh-elfeed-org-tree-id "elfeed"))
-
 
