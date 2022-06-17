@@ -26,12 +26,5 @@ I'm currently testing everything but the debian deps as I'm building off that co
 If you start using this and want to make an improvement just send me a request and I'll be happy to let you throw a PR.
 
 
-** TODO: Add rustup install
-
-** TODO: Add rust cli tools:  ripgrep, bat, exa, etc.
-
-** TODO: Add oh-my-zsh or starship
-
-** TODO: Add aws serverless dependencies scripts
 
 
