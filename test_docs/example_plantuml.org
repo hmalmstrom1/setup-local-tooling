@@ -1,5 +1,27 @@
-#+OPTIONS: tags:nil creator:nil toc:nil num:nil footer:nil
-#+TITLE Test Plantuml SRC Block Evaluation
+#+OPTIONS: tags:nil creator:nil toc:nil num:nil footer:nil author:nil
+#+TITLE: Test Plantuml SRC Block Evaluation
+
+
+* Spot tests for plantuml org-mode src blocks
+
+[[https://github.com/skuro/plantuml-mode][Plantuml mode]] is an emacs mode for editing plantuml.
+By configuring org-mode to use plantuml in it's src languages like so:
+#+BEGIN_SRC elisp
+  (add-to-list
+   'org-src-lang-modes '("plantuml" . plantuml))
+#+END_SRC
+and in it's org-babel export, like so:
+#+BEGIN_SRC elisp
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (python . t)
+   (plantuml . t)
+   (shell . t)))
+#+END_SRC
+
+You can then test exporting this file to a pdf, html, markdown, or whatever export you need by issuing *M-x org-export-dispatch* (or with the key combo: /C-c C-e/)
+
 
 * Basic sequence diagram
 
