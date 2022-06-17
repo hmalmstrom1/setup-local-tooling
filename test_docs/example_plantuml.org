@@ -41,7 +41,8 @@ on several lines
 end note
 #+END_SRC
 
-#+attr_html: :widtha 500px
+
+#+html: <p align="center"><img src="./notes_messages_seq.png" /></p>
 #+RESULTS:
 [[file:notes_messages_seq.png]]
 
@@ -75,6 +76,7 @@ namespace net.foo {
 BaseClass <|-- net.unused.Person
 #+END_SRC
 
+#+html: <p align="center"><img src="./class_dia.png" /></p>
 #+RESULTS:
 [[file:class_dia.png]]
 
@@ -106,6 +108,7 @@ DA - [First Component]
 HTTP - WS
 #+END_SRC
 
+#+html: <p align="center"><img src="./color_component.png" /></p>
 #+RESULTS:
 [[file:color_component.png]]
 
@@ -152,7 +155,7 @@ Here's an example plantuml doc representing how  kubernetes autoscaler replaces 
   Rel_D(pending, future_pod, "4) Schedule pod")
 #+END_SRC
 
-#+attr_html: :widtha 500px
+#+html: <p align="center"><img src="./eks_autoscaler.png" /></p>
 #+RESULTS:
 [[file:eks_autoscaler.png]]
 
