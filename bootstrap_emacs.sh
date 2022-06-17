@@ -1,22 +1,25 @@
 #!/bin/bash
 
+FONT_DIR=~/.fonts
+OPER_SYS=`uname -s`
+if [ "$OPER_SYS" = "Darwin" ]; then
+    FONT_DIR=~/Library/Fonts
+fi
 
 install_nerd_font () {
     fontName=$1
     release=`curl -s https://api.github.com/repos/ryanoasis/nerd-fonts/releases/latest | jq -r '.name'`
     fname=`curl -s https://api.github.com/repos/ryanoasis/nerd-fonts/releases/latest | jq -r '.assets[].name' | grep -i $fontName`
     mkdir -p ~/.fonts
-    curl -L https://github.com/ryanoasis/nerd-fonts/releases/download/$release/$fname -o ~/.fonts/$fname
+    curl -L https://github.com/ryanoasis/nerd-fonts/releases/download/$release/$fname -o $FONT_DIR/$fname
     if [ $? = 0 ]; then
-	pushd ~/.fonts
+	pushd $FONT_DIR
 	unzip -o $fname
 	popd
     else
 	echo "problems downloading the font $fontName!"
     fi
-}
-
-    
+}    
 
 setup_emacs_things () {
     mkdir -p ~/Documents/Agenda/
@@ -55,7 +58,6 @@ setup_emacs_things () {
 setup_tool_deps() {
     # Insure we have a baseline of tools
     PROCESSED_FILE=".installed_deps"
-    OPER_SYS=`uname -s`
     if [ -f "$PROCESSED_FILE" ]; then
 	echo "dependencies already installed..."
 	return
@@ -97,10 +99,46 @@ setup_tool_deps() {
     fi
 }
 
+get_rustup () {
+    has_rustup=`which rustup`
+    if [[ $has_rustup == "/"* ]]; then
+	echo "Found rustup, skipping install."
+    else 
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+	if [ $? = 0 ]; then
+	    rustup toolchain install stable
+	else
+	    echo "Failed to install rustup"
+	fi
+    fi
+}
 
-install_nerd_font "RobotoMono.zip"
-install_nerd_font "Inconsolata.zip"
-install_nerd_font "Hack.zip"
-install_nerd_font "FiraCode.zip"
+install_cli_tools () {
+    # update or install oh my zsh
+    type omz &>/dev/null && (echo "omz() found, calling update." && omz update) || echo "omz() not found. installing " && sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    # install rust based cli tools
+    cargo_path=`which cargo`
+    if [[ $cargo_path == "/"* ]]; then
+	# we have cargo installed let's grab handy cli tools
+	$($cargo_path install exa)
+	$($cargo_path install ripgrep)
+	$($cargo_path install bat)
+    else
+	echo "Cargo not installed"
+    fi
+}
+
+if [ $INSTALL_FONTS = 1 ]; then
+    install_nerd_font "RobotoMono.zip"
+    install_nerd_font "Inconsolata.zip"
+    install_nerd_font "Hack.zip"
+    install_nerd_font "FiraCode.zip"
+    if [ "$OPER_SYS" = "Linux" ]; then
+	fc-cache -f -v
+    fi
+fi
+
 setup_tool_deps
+get_rustup
+install_cli_tools
 setup_emacs_things
