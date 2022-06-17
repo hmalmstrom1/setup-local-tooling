@@ -1,0 +1,136 @@
+#+OPTIONS: tags:nil creator:nil toc:nil num:nil footer:nil
+#+TITLE Test Plantuml SRC Block Evaluation
+
+* Basic sequence diagram
+
+Notes on messages example from plantuml home page:
+#+BEGIN_SRC plantuml :file notes_messages_seq.png
+Alice->Bob : hello
+note left: this is a first note
+
+Bob->Alice : ok
+note right: this is another note
+
+Bob->Bob : I am thinking
+note left
+a note
+can also be defined
+on several lines
+end note
+#+END_SRC
+
+#+attr_html: :widtha 500px
+#+RESULTS:
+[[file:notes_messages_seq.png]]
+
+
+* Class diagram
+
+#+BEGIN_SRC plantuml :file class_dia.png
+' Split into 4 pages
+page 2x2
+skinparam pageMargin 10
+skinparam pageExternalColor gray
+skinparam pageBorderColor black
+
+class BaseClass
+
+namespace net.dummy #DDDDDD {
+    .BaseClass <|-- Person
+    Meeting o-- Person
+
+    .BaseClass <|- Meeting
+
+}
+
+namespace net.foo {
+  net.dummy.Person  <|- Person
+  .BaseClass <|-- Person
+
+  net.dummy.Meeting o-- Person
+}
+
+BaseClass <|-- net.unused.Person
+#+END_SRC
+
+#+RESULTS:
+[[file:class_dia.png]]
+
+* More skinning
+
+#+BEGIN_SRC plantuml :file color_component.png
+skinparam interface {
+  backgroundColor RosyBrown
+  borderColor orange
+}
+
+skinparam component {
+  FontSize 13
+  BackgroundColor<<Apache>> Pink
+  BorderColor<<Apache>> #FF6655
+  FontName Courier
+  BorderColor black
+  BackgroundColor gold
+  ArrowFontName Impact
+  ArrowColor #FF6655
+  ArrowFontColor #777777
+}
+
+() "Data Access" as DA
+Component "Web Server" as WS << Apache >>
+
+DA - [First Component]
+[First Component] ..> () HTTP : use
+HTTP - WS
+#+END_SRC
+
+#+RESULTS:
+[[file:color_component.png]]
+
+
+* Kubernetes Autoscaler
+
+Here's an example plantuml doc representing how  kubernetes autoscaler replaces pods:
+
+#+BEGIN_SRC plantuml :file eks_autoscaler.png
+  !define C4Puml https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master
+  !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v13.0/dist
+  !includeurl AWSPuml/AWSCommon.puml
+  !includeurl AWSPuml/General/SDK.puml
+  !includeurl AWSPuml/NetworkingContentDelivery/ElasticLoadBalancing.puml
+  !includeurl AWSPuml/NetworkingContentDelivery/Route53.puml
+  !includeurl AWSPuml/Containers/EKSCloud.puml
+  !includeurl AWSPuml/Containers/ElasticContainerServiceContainer1.puml
+  !includeurl AWSPuml/GroupIcons/AutoScalingGroup.puml
+  !includeurl C4Puml/C4_Container.puml
+
+
+  System_Boundary(eks, "EKS", "AWS EKS") {
+  EKSCloud(auto, "Cluster Autoscaler", "Kubernetes Cluster Autoscaler")
+  ElasticContainerServiceContainer1(pending, "Pending Pod", "Pod in Pending State")
+  AutoScalingGroup(asg, "Autoscaling Group", "AWS Auto Scaling")
+
+  System_Boundary(node1, "Node", "EKS Node") {
+      ElasticContainerServiceContainer1(pod1, "Pod", "Running Pod")
+      ElasticContainerServiceContainer1(pod2, "Pod", "Running Pod")
+  }
+
+  System_Boundary(node2, "Node", "Freshly Autoscaled EKS Node") {
+      node future_pod <<Future Running Pod>>
+  }
+
+  }
+
+  Lay_L(node1, node2)
+  Lay_U(node1, pending)
+
+  Rel_U(pending, auto, "1) Insufficient resources, pod Pending")
+  Rel_D(auto, asg, "2) add instances")
+  Rel_D(auto, node2, "3) provision additional node")
+  Rel_D(pending, future_pod, "4) Schedule pod")
+#+END_SRC
+
+#+attr_html: :widtha 500px
+#+RESULTS:
+[[file:eks_autoscaler.png]]
+
