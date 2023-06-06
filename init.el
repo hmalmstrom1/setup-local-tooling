@@ -77,7 +77,8 @@ There are two things you can do about this warning:
 		    :font "RobotoMono Nerd Font"
 		    :height 140)
 (set-face-attribute 'variable-pitch nil
-		    :font "Cabin"
+		    ;;		    :font "SpaceMonoNerdFont"
+		    :font "CousineNerdFont"
 		    :height 165
 		    :weight 'regular)
 
@@ -101,10 +102,10 @@ There are two things you can do about this warning:
                   (org-level-6 . 1.1)
                   (org-level-7 . 1.1)
                   (org-level-8 . 1.1)))
-    (set-face-attribute (car face) nil :font "Cabin" :weight 'regular :height (cdr face)))
+    (set-face-attribute (car face) nil :font "SpaceMonoNerdFont" :weight 'regular :height (cdr face)))
 
   ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-  (set-face-attribute 'org-block nil    :foreground nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-block nil    :foreground 'unspecified :inherit 'fixed-pitch)
   (set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
   (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
   (set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
@@ -146,6 +147,12 @@ There are two things you can do about this warning:
    (interactive "nTransparency Value 0 - 100 opaque:")
    (set-frame-parameter (selected-frame) 'alpha value))
 
+;; attempt to set image types. some aren't included for some reason
+(setq image-types '(svg png gif tiff jpeg xpm xbm pbm))
+;; set browser 
+(setq gnus-button-url 'browse-url-generic
+          browse-url-generic-program "xdg-open"
+          browse-url-browser-function gnus-button-url)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Packages and Configuration ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -161,7 +168,7 @@ There are two things you can do about this warning:
 
 (use-package doom-themes
   :init
-  (load-theme 'doom-moonlight)
+  (load-theme 'doom-moonlight t)
   (doom-themes-visual-bell-config)
   (doom-themes-neotree-config)
 )
@@ -171,7 +178,6 @@ There are two things you can do about this warning:
  :custom
  (setq doom-modeline-height 18)
  (setq doom-modeline-bar-width 4)
- (setq doom-modeline-bar t)
  (setq doom-modeline-hud t)
  (setq doom-modeline-project-detection 'projectile)
  (setq doom-modeline-major-mode-color-icon t)
@@ -208,10 +214,19 @@ There are two things you can do about this warning:
 (use-package projectile
   :diminish projectile
   )
+
+(use-package ob-typescript
+  :ensure t)
+(use-package ob-rust
+  :ensure t)
+(use-package ob-sql-mode
+  :ensure t)
+
+(use-package flycheck-plantuml)
 (use-package flycheck
   :config
-  (require 'flycheck-plantuml)
   (flycheck-plantuml-setup))
+
 
 
 (use-package yasnippet
@@ -237,9 +252,8 @@ There are two things you can do about this warning:
   :after org
   :hook (org-mode . org-bullets-mode)
   :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+  (setq org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
-(use-package ob-rust)
 
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -408,7 +422,6 @@ There are two things you can do about this warning:
 (use-package org
   :hook (org-mode . efs/org-mode-setup)
   :config
-  (require 'ob-sql-mode)
   (require 'ob-shell)
 ;;  (add-to-list 'org-src-mode '("plantuml" . plantuml))
   (setq org-ellipsis " ⌄")
@@ -624,7 +637,7 @@ There are two things you can do about this warning:
   ;; Recommended: Enable Corfu globally.
   ;; This is recommended since dabbrev can be used globally (M-/).
   :init
-  (corfu-global-mode))
+  (global-corfu-mode))
 
 
 ;; Optionally use the `orderless' completion style. See
@@ -744,8 +757,10 @@ There are two things you can do about this warning:
    :preview-key '(:debounce 0.2 any)
    consult-ripgrep consult-git-grep consult-grep
    consult-bookmark consult-recent-file consult-xref
-   consult--source-file consult--source-project-file consult--source-bookmark
-   :preview-key (kbd "M-."))
+   consult--source-recent-file consult--source-project-recent-file consult--source-bookmark
+   :preview-key "M-."
+   ;; :preview-key (:debounce 0.4 any)
+   )
 
   ;; Optionally configure the narrowing key.
   ;; Both < and C-+ work reasonably well.
@@ -878,3 +893,100 @@ There are two things you can do about this warning:
   (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))
   (setq rmh-elfeed-org-tree-id "elfeed"))
 
+(use-package pocket-reader)
+
+(use-package multi-vterm)
+
+
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(connection-local-criteria-alist
+   '(((:application tramp)
+      tramp-connection-local-default-system-profile tramp-connection-local-default-shell-profile)))
+ '(connection-local-profile-alist
+   '((tramp-connection-local-darwin-ps-profile
+      (tramp-process-attributes-ps-args "-acxww" "-o" "pid,uid,user,gid,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "state=abcde" "-o" "ppid,pgid,sess,tty,tpgid,minflt,majflt,time,pri,nice,vsz,rss,etime,pcpu,pmem,args")
+      (tramp-process-attributes-ps-format
+       (pid . number)
+       (euid . number)
+       (user . string)
+       (egid . number)
+       (comm . 52)
+       (state . 5)
+       (ppid . number)
+       (pgrp . number)
+       (sess . number)
+       (ttname . string)
+       (tpgid . number)
+       (minflt . number)
+       (majflt . number)
+       (time . tramp-ps-time)
+       (pri . number)
+       (nice . number)
+       (vsize . number)
+       (rss . number)
+       (etime . tramp-ps-time)
+       (pcpu . number)
+       (pmem . number)
+       (args)))
+     (tramp-connection-local-busybox-ps-profile
+      (tramp-process-attributes-ps-args "-o" "pid,user,group,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "stat=abcde" "-o" "ppid,pgid,tty,time,nice,etime,args")
+      (tramp-process-attributes-ps-format
+       (pid . number)
+       (user . string)
+       (group . string)
+       (comm . 52)
+       (state . 5)
+       (ppid . number)
+       (pgrp . number)
+       (ttname . string)
+       (time . tramp-ps-time)
+       (nice . number)
+       (etime . tramp-ps-time)
+       (args)))
+     (tramp-connection-local-bsd-ps-profile
+      (tramp-process-attributes-ps-args "-acxww" "-o" "pid,euid,user,egid,egroup,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "state,ppid,pgid,sid,tty,tpgid,minflt,majflt,time,pri,nice,vsz,rss,etimes,pcpu,pmem,args")
+      (tramp-process-attributes-ps-format
+       (pid . number)
+       (euid . number)
+       (user . string)
+       (egid . number)
+       (group . string)
+       (comm . 52)
+       (state . string)
+       (ppid . number)
+       (pgrp . number)
+       (sess . number)
+       (ttname . string)
+       (tpgid . number)
+       (minflt . number)
+       (majflt . number)
+       (time . tramp-ps-time)
+       (pri . number)
+       (nice . number)
+       (vsize . number)
+       (rss . number)
+       (etime . number)
+       (pcpu . number)
+       (pmem . number)
+       (args)))
+     (tramp-connection-local-default-shell-profile
+      (shell-file-name . "/bin/sh")
+      (shell-command-switch . "-c"))
+     (tramp-connection-local-default-system-profile
+      (path-separator . ":")
+      (null-device . "/dev/null"))))
+ '(custom-safe-themes
+   '("8d3ef5ff6273f2a552152c7febc40eabca26bae05bd12bc85062e2dc224cde9a" default))
+ '(package-selected-packages
+   '(pocket-reader multi-vterm elfeed-org elfeed consult orderless corfu vertico marginalia flycheck-cfn cfn-mode js2-mode org-fancy-priorities magit web-mode flycheck-rust cargo rustic lsp-java lsp-pyright company-box company lsp-tailwindcss lsp-ui lsp-mode hydra emojify no-littering all-the-icons-ibuffer neotree doom-themes doom-modeline rainbow-delimiters which-key projectile yasnippet org-bullets ob-rust flycheck-plantuml ob-typescript)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
