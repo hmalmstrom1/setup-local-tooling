@@ -748,12 +748,6 @@
   (setq rmh-elfeed-org-tree-id "elfeed"))
 
 
-(use-package gptel
-  :straight t
-  :config
-  (setq gptel-api-key "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")
-  )
-
 (use-package ytdious
   :straight t
   :config
